@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Countdown</title>
+</head>
+<body>
+<div id="clock">
+	<span id="d">00</span>&nbsp;days&nbsp;
+	<span id="h">00</span>&nbsp;:&nbsp;
+	<span id="m">00</span>&nbsp;:&nbsp;
+	<span id="s">00</span>
+</div>
+<script type="text/javascript">
+	var counter = {
+		targetDate : '',
+		daysElement : '',
+		hourElement : '',
+		minElement : '',
+		secElement : '',
+
+		init : function(){
+			counter.targetDate = new Date( '2017-03-03' );
+			counter.daysElement = document.getElementById('d');
+			counter.hourElement = document.getElementById('d');
+			counter.minElement = document.getElementById('d');
+			counter.secElement = document.getElementById('d');
+			setInterval(counter.method.update,1000);
+		},
+		method : {
+			update: function(){
+				// var timeLeft = counter.targetDate->getTime() - counter.targetDate->Now();
+				counter.daysElement.innerHTML = '';
+				//console.log(counter.targetDate);			
+			}	
+		}
+		
+	}
+	counter.init();
+</script>
+</body>
+</html>
