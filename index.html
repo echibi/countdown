@@ -73,6 +73,7 @@
 		hourElement : '',
 		minElement : '',
 		secElement : '',
+		intervalHandle: 0,
 
 		init : function(){
 			counter.targetDate = new Date( '2017-03-03' );
@@ -82,17 +83,24 @@
 			counter.secElement = document.getElementById('s');
 			
 			counter.method.update();
-			setInterval(counter.method.update,1000);
+			counter.intervalHandle = setInterval(counter.method.update,1000);
 		},
 		method : {
 			update: function(){
 				var now = moment(),
 					target = moment(counter.targetDate);
 
+
+				if( 0 > target.diff(now)) {
+					clearInterval(counter.intervalHandle);
+					return false;
+				}
+
 				var	diffDays 	= target.diff(now, 'days');
 				var diffHours 	= target.subtract(diffDays, 'days').diff(now, 'hours');
 				var diffMin 	= target.subtract(diffHours, 'hours').diff(now, 'minutes');
 				var diffSeconds = target.subtract(diffMin, 'minutes').diff(now, 'seconds');
+
 
 				if( counter.daysElement.innerHTML != diffDays ) {
 					counter.daysElement.innerHTML = diffDays;
