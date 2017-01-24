@@ -2,14 +2,70 @@
 <html>
 <head>
 	<title>Countdown</title>
+	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+	<style type="text/css">
+		* {
+			box-sizing: border-box;
+			margin:0;
+			padding:0;
+		}
+		html,body{
+			height: 100%;
+		}
+		body{
+			background:#333 no-repeat;
+			background-size: cover;
+			background-position: center;
+			font-family: 'Oswald', sans-serif;
+		}
+		body.zelda-1 {
+			background-image:url('img/zelda-bg-vertical.png');
+		}
+
+		#clock {
+			margin:3em auto 2em;
+			padding:1.5em;
+			max-width: 1200px;
+
+			background:rgba(0,0,0, 0.33);
+
+			color:#fff;
+			text-transform: uppercase;
+			font-size:3em;
+			text-align: center;
+			text-shadow: 3px 3px 2px rgba(100, 100, 100, 0.3);
+		}
+		.days-wrap {
+			display: block;
+		}
+		@media (min-width: 767px){
+			
+			body.zelda-1 {
+				background-image:url('img/zelda-bg.png');
+			}
+			#clock {
+				margin-top:1em;
+				background: transparent;
+				text-align: left;
+				font-size:3em;
+			}
+			.days-wrap {
+				display: inline;
+				background:transparent;
+			}
+		}
+	</style>
 </head>
-<body>
+<body class="zelda-1">
 <div id="clock">
-	<span id="d">00</span>&nbsp;days&nbsp;
-	<span id="h">00</span>&nbsp;:&nbsp;
-	<span id="m">00</span>&nbsp;:&nbsp;
+	<div class="days-wrap">
+		<span id="d">00</span>&nbsp;days&nbsp;
+	</div>
+	<span id="h">00</span>&nbsp;:
+	<span id="m">00</span>&nbsp;:
 	<span id="s">00</span>
 </div>
+<script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
 <script type="text/javascript">
 	var counter = {
 		targetDate : '',
@@ -21,17 +77,43 @@
 		init : function(){
 			counter.targetDate = new Date( '2017-03-03' );
 			counter.daysElement = document.getElementById('d');
-			counter.hourElement = document.getElementById('d');
-			counter.minElement = document.getElementById('d');
-			counter.secElement = document.getElementById('d');
+			counter.hourElement = document.getElementById('h');
+			counter.minElement = document.getElementById('m');
+			counter.secElement = document.getElementById('s');
+			
+			counter.method.update();
 			setInterval(counter.method.update,1000);
 		},
 		method : {
 			update: function(){
-				// var timeLeft = counter.targetDate->getTime() - counter.targetDate->Now();
-				counter.daysElement.innerHTML = '';
-				//console.log(counter.targetDate);			
-			}	
+				var now = moment(),
+					target = moment(counter.targetDate);
+
+				var	diffDays 	= target.diff(now, 'days');
+				var diffHours 	= target.subtract(diffDays, 'days').diff(now, 'hours');
+				var diffMin 	= target.subtract(diffHours, 'hours').diff(now, 'minutes');
+				var diffSeconds = target.subtract(diffMin, 'minutes').diff(now, 'seconds');
+
+				if( counter.daysElement.innerHTML != diffDays ) {
+					counter.daysElement.innerHTML = diffDays;
+				}
+				if( counter.hourElement.innerHTML != diffHours ) {
+					counter.hourElement.innerHTML = counter.method.pad(diffHours, 2);
+				}
+				if( counter.minElement.innerHTML != diffMin ) {
+					counter.minElement.innerHTML = counter.method.pad(diffMin, 2);;
+				}
+				// Always update seconds...
+				counter.secElement.innerHTML 	= counter.method.pad(diffSeconds, 2);;
+							
+			},
+			pad: function (str, max) {
+				if('number' === typeof(str)){
+					str = str.toString();
+				}
+			  	return str.length < max ? counter.method.pad("0" + str, max) : str;
+			}
+
 		}
 		
 	}
